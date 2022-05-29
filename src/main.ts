@@ -5,9 +5,7 @@ import { AppModule } from './app.module';
 const host = 3000;
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, {
-    logger: ['log', 'warn', 'error'],
-  });
+  const app = await NestFactory.create(AppModule);
 
   // 初始化api文档
   const config = new DocumentBuilder()

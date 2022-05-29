@@ -1,5 +1,15 @@
-import { Body, Controller, Get, Param, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  Inject,
+} from '@nestjs/common';
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
 import { TaskService } from './task.service';
 import { CrateTaskDto } from './dto/create-task.dto';
 import { GetTaskDto } from './dto/get-task.dto';
@@ -7,7 +17,11 @@ import { GetTaskDto } from './dto/get-task.dto';
 @ApiTags('任务')
 @Controller('task')
 export class TaskController {
-  constructor(private readonly taskService: TaskService) {}
+  constructor(
+    private readonly taskService: TaskService,
+    @Inject(WINSTON_MODULE_PROVIDER)
+    private readonly logger: Logger,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: '获取任务列表' })
@@ -15,6 +29,9 @@ export class TaskController {
     status: 200,
   })
   getTask(@Query() query: GetTaskDto): string {
+    this.logger.info('Calling getHello()', {
+      controller: TaskController.name,
+    });
     console.log('query: ', query);
     return this.taskService.getTask();
   }

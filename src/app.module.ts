@@ -4,14 +4,39 @@ import {
   MiddlewareConsumer,
   RequestMethod,
 } from '@nestjs/common';
+import { WinstonModule } from 'nest-winston';
+import * as winston from 'winston';
+import 'winston-daily-rotate-file';
 import { LoggerMiddleware, logger } from './common/logger.middleware';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TaskModule } from './router/task/task.module';
 import { TaskController } from './router/task/task.controller';
+import { consoleConfig } from './logger/winston.logger.console';
 
 @Module({
-  imports: [TaskModule],
+  imports: [
+    // 配置winston日志模块
+    WinstonModule.forRoot({
+      transports: [
+        new winston.transports.Console(consoleConfig),
+        new winston.transports.DailyRotateFile({
+          dirname: 'logs',
+          filename: 'nest-fluebot-%DATE%.log',
+          datePattern: 'YYYY-MM-DD-HH',
+          zippedArchive: true,
+          maxSize: '20m',
+          maxFiles: '14d',
+          format: winston.format.combine(
+            winston.format.timestamp(),
+            winston.format.json(),
+          ),
+        }),
+      ],
+    }),
+    // 路由模块
+    TaskModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
