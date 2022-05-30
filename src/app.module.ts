@@ -4,10 +4,10 @@ import {
   MiddlewareConsumer,
   RequestMethod,
 } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
 import { WinstonModule } from 'nest-winston';
 import * as winston from 'winston';
 import 'winston-daily-rotate-file';
-import { PassportModule } from '@nestjs/passport';
 import { LoggerMiddleware, logger } from './common/logger.middleware';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -15,6 +15,7 @@ import { consoleConfig } from './logger/winston.logger.console';
 import { AuthModule } from './auth/auth.module';
 import { UsersService } from './users/users.service';
 import { UsersModule } from './users/users.module';
+import { RoleAuthGuard } from './auth/guards/auth.guard';
 // 路由模块
 import { TaskModule } from './router/task/task.module';
 import { TaskController } from './router/task/task.controller';
@@ -45,7 +46,13 @@ import { TaskController } from './router/task/task.controller';
     UsersModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: RoleAuthGuard,
+    },
+  ],
 })
 export class AppModule implements NestModule {
   // 配置中间件

@@ -9,8 +9,7 @@ import {
 // import { AuthGuard } from '@nestjs/passport';
 import { AppService } from './app.service';
 import { AuthService } from './auth/auth.service';
-import { LocalAuthGuard } from './auth/guards/local-auth.guard';
-import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { NoAuth } from './common/decorator/customize';
 
 @Controller()
 export class AppController {
@@ -34,13 +33,12 @@ export class AppController {
     return 'this is test async api';
   }
 
-  @UseGuards(LocalAuthGuard)
+  @NoAuth()
   @Post('auth/login')
   async login(@Request() req) {
     return this.authService.login(req.user);
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Request() req) {
     return req.user;
