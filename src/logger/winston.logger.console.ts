@@ -54,3 +54,7 @@ export const httpLogger = winston.createLogger({
     new winston.transports.DailyRotateFile(getFileConfig('Http')),
   ],
 });
+
+export const errorLogger = winston.createLogger({
+  transports: [new winston.transports.DailyRotateFile(getFileConfig('Error'))],
+});

@@ -2,13 +2,17 @@ import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import { logger } from './common/logger.middleware';
-
+import { MyLoggerConsole } from './logger/logger.service';
 const host = 3000;
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: new MyLoggerConsole(),
+  });
   // 日志中间件
   app.use(logger);
+  // http异常过滤器
+  // app.useGlobalFilters(new HttpExceptionFilter());
 
   // 初始化api文档
   const config = new DocumentBuilder()

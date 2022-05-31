@@ -1,9 +1,15 @@
-import { LoggerService, Logger, Injectable, Scope } from '@nestjs/common';
+import {
+  LoggerService,
+  Logger,
+  Injectable,
+  Scope,
+  ConsoleLogger,
+} from '@nestjs/common';
+import { errorLogger } from './winston.logger.console';
 
 export class MyLogger implements LoggerService {
   log(message: string) {
     /* your implementation */
-    console.log('456454564');
   }
   error(message: string, trace: string) {
     /* your implementation */
@@ -20,9 +26,12 @@ export class MyLogger implements LoggerService {
 }
 
 @Injectable({ scope: Scope.TRANSIENT })
-export class MyLoggerTwo extends Logger {
+export class MyLoggerConsole extends ConsoleLogger {
+  log(message: string, trace: string) {
+    super.log(message, trace);
+  }
   error(message: string, trace: string) {
-    // add your tailored logic here
+    errorLogger.error(message + '---' + trace);
     super.error(message, trace);
   }
 }
