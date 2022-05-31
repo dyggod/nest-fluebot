@@ -11,8 +11,9 @@ import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
 import { TaskService } from './task.service';
-import { CrateTaskDto } from './dto/create-task.dto';
+import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTaskDto } from './dto/get-task.dto';
+import { Task } from './schemas/task.schema';
 
 @ApiTags('任务')
 @Controller('task')
@@ -24,16 +25,19 @@ export class TaskController {
   ) {}
 
   @Get()
-  @ApiOperation({ summary: '获取任务列表' })
+  @ApiOperation({ summary: '获取任务' })
   @ApiResponse({
     status: 200,
   })
-  getTask(@Query() query: GetTaskDto): string {
+  async getTask(@Query() query: GetTaskDto): Promise<Task[] | Task> {
     this.logger.info('Calling getHello()', {
       controller: TaskController.name,
     });
     console.log('query: ', query);
-    return this.taskService.getTask();
+    if (query.id !== undefined) {
+      return this.taskService.getById(query.id);
+    }
+    return this.taskService.getAll();
   }
 
   @Get(':id')
@@ -55,8 +59,7 @@ export class TaskController {
   @ApiResponse({
     status: 200,
   })
-  create(@Body() createTaskDto: CrateTaskDto) {
-    console.log('createTaskDto: ', createTaskDto);
-    return 'add a task';
+  async create(@Body() createTaskDto: CreateTaskDto) {
+    await this.taskService.create(createTaskDto);
   }
 }
