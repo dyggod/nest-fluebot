@@ -5,3 +5,8 @@ export const mongoConfig = {
   password: 'nest-bk-123456',
   db: 'test',
 };
+
+export const crlfTest = {
+  testA: 111,
+  testB: 222,
+};
