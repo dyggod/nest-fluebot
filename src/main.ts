@@ -1,11 +1,14 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './app.module';
+import { logger } from './common/logger.middleware';
 
 const host = 3000;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  // 日志中间件
+  app.use(logger);
 
   // 初始化api文档
   const config = new DocumentBuilder()
