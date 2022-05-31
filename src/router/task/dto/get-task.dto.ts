@@ -3,6 +3,6 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class GetTaskDto {
   @IsString()
-  @ApiProperty()
-  readonly userId: string;
+  @ApiProperty({ required: false })
+  readonly id: string;
 }
