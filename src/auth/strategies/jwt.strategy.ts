@@ -19,6 +19,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
    * 返回值将写入进@UseGuards()装饰后的结果中user的值
    */
   async validate(payload: any) {
-    return { userId: payload.sub, username: payload.username };
+    return {
+      userId: payload.sub,
+      username: payload.username,
+      roles: payload.roles,
+    };
   }
 }
