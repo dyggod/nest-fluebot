@@ -14,6 +14,9 @@ async function bootstrap() {
   // http异常过滤器
   // app.useGlobalFilters(new HttpExceptionFilter());
 
+  //cores
+  app.enableCors();
+
   // 初始化api文档
   const config = new DocumentBuilder()
     .setTitle('nest-fluebot')

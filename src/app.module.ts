@@ -9,6 +9,7 @@ import { WinstonModule } from 'nest-winston';
 import 'winston-daily-rotate-file';
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { appLogConfig } from './logger/winston.logger.console';
@@ -25,12 +26,18 @@ import { TaskModule } from './router/task/task.module';
 
 @Module({
   imports: [
+    // 配置模块
     ConfigModule.forRoot({
       envFilePath: '.mongodb.env',
       isGlobal: true,
     }),
     // 认证模块
     AuthModule,
+    // 速率限制模块
+    ThrottlerModule.forRoot({
+      ttl: 10,
+      limit: 10,
+    }),
     // 配置winston日志模块用以导出日志文件
     WinstonModule.forRoot({
       transports: appLogConfig,
@@ -55,6 +62,10 @@ import { TaskModule } from './router/task/task.module';
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
     },
   ],
 })
