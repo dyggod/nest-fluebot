@@ -13,7 +13,9 @@ import { AppService } from './app.service';
 import { appLogConfig } from './logger/winston.logger.console';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
+// 认证、授权守卫
 import { RoleAuthGuard } from './auth/guards/auth.guard';
+import { RolesGuard } from './roles/roles.guard';
 // 路由模块
 import { TaskModule } from './router/task/task.module';
 // config变量
@@ -45,6 +47,10 @@ import { mongoConfig } from './config/mongodb';
     {
       provide: APP_GUARD,
       useClass: RoleAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
 })

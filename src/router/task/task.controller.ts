@@ -14,6 +14,8 @@ import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTaskDto } from './dto/get-task.dto';
 import { Task } from './schemas/task.schema';
+import { Roles } from 'src/roles/roles.decorator';
+import { RolesEnum } from 'src/roles/roles.enum';
 
 @ApiTags('任务')
 @Controller('task')
@@ -25,6 +27,7 @@ export class TaskController {
   ) {}
 
   @Get()
+  @Roles(RolesEnum.User, RolesEnum.Admin)
   @ApiOperation({ summary: '获取任务' })
   @ApiResponse({
     status: 200,
@@ -41,6 +44,7 @@ export class TaskController {
   }
 
   @Get(':id')
+  @Roles(RolesEnum.User)
   @ApiOperation({ summary: '获取任务列表，带路由参数' })
   getTaskByParams(@Param() params) {
     console.log('params: ', params);
@@ -55,11 +59,13 @@ export class TaskController {
   }
 
   @Post()
+  @Roles(RolesEnum.Admin)
   @ApiOperation({ summary: '添加一个任务' })
   @ApiResponse({
     status: 200,
   })
   async create(@Body() createTaskDto: CreateTaskDto) {
-    await this.taskService.create(createTaskDto);
+    const result = await this.taskService.create(createTaskDto);
+    return result;
   }
 }
