@@ -1,6 +1,15 @@
 import { Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { JwtService } from '@nestjs/jwt';
+import { successResponseWrap, failResponseWrap } from 'src/utils/reponse';
+
+export enum AuthCode {
+  ErrorUser = 40001, // 用户名或密码错误
+}
+
+export enum AuthCodeMessage {
+  ErrorUser = '用户名或密码错误',
+}
 
 @Injectable()
 export class AuthService {
@@ -20,13 +29,21 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = {
-      username: user.username,
-      sub: user.userId,
-      roles: user.roles,
-    };
-    return {
-      access_token: this.jwtService.sign(payload),
-    };
+    if (!user?.username) {
+      return failResponseWrap(
+        null,
+        AuthCode.ErrorUser,
+        AuthCodeMessage.ErrorUser,
+      );
+    } else {
+      const payload = {
+        username: user.username,
+        sub: user.userId,
+        roles: user.roles,
+      };
+      return successResponseWrap({
+        token: this.jwtService.sign(payload),
+      });
+    }
   }
 }

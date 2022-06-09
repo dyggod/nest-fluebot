@@ -1,6 +1,6 @@
 import { Strategy } from 'passport-local';
 import { PassportStrategy } from '@nestjs/passport';
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { AuthService } from '../auth.service';
 
 @Injectable()
@@ -18,9 +18,13 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   async validate(username: string, password: string): Promise<any> {
     console.log('username: ', username);
     console.log('password: ', password);
-    const user = this.authService.validateUser(username, password);
+    const user = await this.authService.validateUser(username, password);
     if (!user) {
-      throw new UnauthorizedException();
+      /**
+       * 此处使用空对象`{}`特指没有查询到用户
+       * 交由接口层判断并处理
+       */
+      return {} as any;
     }
     return user;
   }
