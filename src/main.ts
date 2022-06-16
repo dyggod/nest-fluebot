@@ -15,7 +15,11 @@ async function bootstrap() {
   // app.useGlobalFilters(new HttpExceptionFilter());
 
   //cores
-  app.enableCors();
+  app.enableCors({
+    origin: true,
+    credentials: true,
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+  });
 
   // 初始化api文档
   const config = new DocumentBuilder()
